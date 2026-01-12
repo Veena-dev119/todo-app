@@ -1,72 +1,66 @@
-// Render backend URL
-const BASE_URL = "https://todo-app-backend-eqqj.onrender.com/todos";
-
-// DOM Elements
-const taskInput = document.getElementById("task-input");
+const todoInput = document.getElementById("todo-input");
 const addBtn = document.getElementById("add-btn");
 const todoList = document.getElementById("todo-list");
 
-// Fetch and display all tasks from backend
+// Render backend URL
+const BASE_URL = "https://todo-app-backend-eqqj.onrender.com";
+
+// Fetch and display tasks
 async function fetchTodos() {
   try {
-    const res = await fetch(BASE_URL);
+    const res = await fetch(`${BASE_URL}/todos`);
     const todos = await res.json();
+    todoList.innerHTML = ""; // Clear existing list
 
-    // Clear current list
-    todoList.innerHTML = "";
-
-    // Render each todo
     todos.forEach(todo => {
       const li = document.createElement("li");
       li.textContent = todo.task;
 
+      // Create Delete button
       const delBtn = document.createElement("button");
       delBtn.textContent = "Delete";
-      delBtn.onclick = () => deleteTodo(todo._id);
+      delBtn.addEventListener("click", () => deleteTodo(todo._id));
 
       li.appendChild(delBtn);
       todoList.appendChild(li);
     });
-  } catch (error) {
-    console.error("Failed to fetch todos:", error);
+  } catch (err) {
+    console.error("Failed to fetch todos:", err);
   }
 }
 
-// Add a new todo
+// Add a new task
 async function addTodo() {
-  const task = taskInput.value.trim();
+  const task = todoInput.value.trim();
   if (!task) return;
 
   try {
-    const res = await fetch(BASE_URL, {
+    const res = await fetch(`${BASE_URL}/todos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ task })
     });
 
-    const newTodo = await res.json();
-    taskInput.value = ""; // Clear input
+    const data = await res.json();
+    todoInput.value = ""; // Clear input
     fetchTodos(); // Refresh list
-  } catch (error) {
-    console.error("Failed to add todo:", error);
+  } catch (err) {
+    console.error("Failed to add todo:", err);
   }
 }
 
-// Delete a todo
+// Delete a task
 async function deleteTodo(id) {
   try {
-    await fetch(`${BASE_URL}/${id}`, {
-      method: "DELETE"
-    });
-
+    await fetch(`${BASE_URL}/todos/${id}`, { method: "DELETE" });
     fetchTodos(); // Refresh list
-  } catch (error) {
-    console.error("Failed to delete todo:", error);
+  } catch (err) {
+    console.error("Failed to delete todo:", err);
   }
 }
 
-// Event listeners
+// Event listener
 addBtn.addEventListener("click", addTodo);
 
-// Load todos on page load
+// Initial load
 fetchTodos();
