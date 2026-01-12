@@ -1,6 +1,6 @@
 // ----------------- DOM Elements -----------------
-const taskInput = document.getElementById("new-task"); // matches HTML
-const addTaskBtn = document.querySelector("#todo-form button"); // first button inside form
+const taskInput = document.getElementById("new-task");
+const taskForm = document.getElementById("todo-form");
 const taskList = document.getElementById("tasks");
 
 // ----------------- Backend URL -----------------
@@ -24,8 +24,11 @@ function renderTasks(todos) {
   taskList.innerHTML = ""; // clear previous list
   todos.forEach(todo => {
     const li = document.createElement("li");
-    li.textContent = todo.task;
     li.className = "task-item";
+
+    const span = document.createElement("span");
+    span.textContent = todo.task;
+    li.appendChild(span);
 
     // Delete button
     const delBtn = document.createElement("button");
@@ -40,7 +43,7 @@ function renderTasks(todos) {
 
 // Add a new task
 async function addTask(e) {
-  e.preventDefault(); // prevent form submission
+  e.preventDefault(); // prevent page refresh
   const newTask = taskInput.value.trim();
   if (!newTask) return;
 
@@ -51,7 +54,7 @@ async function addTask(e) {
       body: JSON.stringify({ task: newTask }),
     });
     taskInput.value = "";
-    fetchTasks(); // refresh list
+    fetchTasks();
   } catch (error) {
     console.error("Error adding task:", error);
   }
@@ -63,19 +66,14 @@ async function deleteTask(id) {
     await fetch(`${BACKEND_URL}/todos/${id}`, {
       method: "DELETE",
     });
-    fetchTasks(); // refresh list
+    fetchTasks();
   } catch (error) {
     console.error("Error deleting task:", error);
   }
 }
 
 // ----------------- Event Listeners -----------------
-addTaskBtn.addEventListener("click", addTask);
-
-// Optional: press Enter to add task
-taskInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") addTask(e);
-});
+taskForm.addEventListener("submit", addTask);
 
 // ----------------- Initial Load -----------------
 fetchTasks();
