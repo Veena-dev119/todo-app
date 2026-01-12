@@ -1,66 +1,81 @@
-const todoInput = document.getElementById("todo-input");
-const addBtn = document.getElementById("add-btn");
-const todoList = document.getElementById("todo-list");
+// ----------------- DOM Elements -----------------
+const taskInput = document.getElementById("new-task"); // matches HTML
+const addTaskBtn = document.querySelector("#todo-form button"); // first button inside form
+const taskList = document.getElementById("tasks");
 
-// Render backend URL
-const BASE_URL = "https://todo-app-backend-eqqj.onrender.com";
+// ----------------- Backend URL -----------------
+const BACKEND_URL = "https://todo-app-backend-eqqj.onrender.com";
 
-// Fetch and display tasks
-async function fetchTodos() {
+// ----------------- Functions -----------------
+
+// Fetch all tasks from backend
+async function fetchTasks() {
   try {
-    const res = await fetch(`${BASE_URL}/todos`);
+    const res = await fetch(`${BACKEND_URL}/todos`);
     const todos = await res.json();
-    todoList.innerHTML = ""; // Clear existing list
-
-    todos.forEach(todo => {
-      const li = document.createElement("li");
-      li.textContent = todo.task;
-
-      // Create Delete button
-      const delBtn = document.createElement("button");
-      delBtn.textContent = "Delete";
-      delBtn.addEventListener("click", () => deleteTodo(todo._id));
-
-      li.appendChild(delBtn);
-      todoList.appendChild(li);
-    });
-  } catch (err) {
-    console.error("Failed to fetch todos:", err);
+    renderTasks(todos);
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
   }
 }
 
+// Render tasks in the UI
+function renderTasks(todos) {
+  taskList.innerHTML = ""; // clear previous list
+  todos.forEach(todo => {
+    const li = document.createElement("li");
+    li.textContent = todo.task;
+    li.className = "task-item";
+
+    // Delete button
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Delete";
+    delBtn.className = "delete-btn";
+    delBtn.onclick = () => deleteTask(todo._id);
+
+    li.appendChild(delBtn);
+    taskList.appendChild(li);
+  });
+}
+
 // Add a new task
-async function addTodo() {
-  const task = todoInput.value.trim();
-  if (!task) return;
+async function addTask(e) {
+  e.preventDefault(); // prevent form submission
+  const newTask = taskInput.value.trim();
+  if (!newTask) return;
 
   try {
-    const res = await fetch(`${BASE_URL}/todos`, {
+    await fetch(`${BACKEND_URL}/todos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ task })
+      body: JSON.stringify({ task: newTask }),
     });
-
-    const data = await res.json();
-    todoInput.value = ""; // Clear input
-    fetchTodos(); // Refresh list
-  } catch (err) {
-    console.error("Failed to add todo:", err);
+    taskInput.value = "";
+    fetchTasks(); // refresh list
+  } catch (error) {
+    console.error("Error adding task:", error);
   }
 }
 
 // Delete a task
-async function deleteTodo(id) {
+async function deleteTask(id) {
   try {
-    await fetch(`${BASE_URL}/todos/${id}`, { method: "DELETE" });
-    fetchTodos(); // Refresh list
-  } catch (err) {
-    console.error("Failed to delete todo:", err);
+    await fetch(`${BACKEND_URL}/todos/${id}`, {
+      method: "DELETE",
+    });
+    fetchTasks(); // refresh list
+  } catch (error) {
+    console.error("Error deleting task:", error);
   }
 }
 
-// Event listener
-addBtn.addEventListener("click", addTodo);
+// ----------------- Event Listeners -----------------
+addTaskBtn.addEventListener("click", addTask);
 
-// Initial load
-fetchTodos();
+// Optional: press Enter to add task
+taskInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") addTask(e);
+});
+
+// ----------------- Initial Load -----------------
+fetchTasks();
