@@ -1,45 +1,72 @@
-const form = document.querySelector("#todo-form");
-const input = document.querySelector("#new-task");
-const ul = document.querySelector("#tasks");
+// Render backend URL
+const BASE_URL = "https://todo-app-backend-eqqj.onrender.com/todos";
 
-// Load all tasks from backend
-async function loadTasks() {
-  ul.innerHTML = "";
-  // const res = await fetch("http://localhost:5000/todos");
-  const res = await fetch("https://todo-app-backend-eqqj.onrender.com/todos");
+// DOM Elements
+const taskInput = document.getElementById("task-input");
+const addBtn = document.getElementById("add-btn");
+const todoList = document.getElementById("todo-list");
 
-  const todos = await res.json();
-  todos.forEach(task => {
-    const li = document.createElement("li");
-    li.textContent = task.task;
+// Fetch and display all tasks from backend
+async function fetchTodos() {
+  try {
+    const res = await fetch(BASE_URL);
+    const todos = await res.json();
 
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "Delete";
-    delBtn.onclick = async () => {
-      await fetch(`http://localhost:5000/todos/${task._id}`, { method: "DELETE" });
-      loadTasks();
-    };
+    // Clear current list
+    todoList.innerHTML = "";
 
-    li.appendChild(delBtn);
-    ul.appendChild(li);
-  });
+    // Render each todo
+    todos.forEach(todo => {
+      const li = document.createElement("li");
+      li.textContent = todo.task;
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete";
+      delBtn.onclick = () => deleteTodo(todo._id);
+
+      li.appendChild(delBtn);
+      todoList.appendChild(li);
+    });
+  } catch (error) {
+    console.error("Failed to fetch todos:", error);
+  }
 }
 
-// Add new task
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const taskText = input.value.trim();
-  if (!taskText) return;
+// Add a new todo
+async function addTodo() {
+  const task = taskInput.value.trim();
+  if (!task) return;
 
-  await fetch("http://localhost:5000/todos", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ task: taskText })
-  });
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ task })
+    });
 
-  input.value = "";
-  loadTasks();
-});
+    const newTodo = await res.json();
+    taskInput.value = ""; // Clear input
+    fetchTodos(); // Refresh list
+  } catch (error) {
+    console.error("Failed to add todo:", error);
+  }
+}
 
-// Initial load
-loadTasks();
+// Delete a todo
+async function deleteTodo(id) {
+  try {
+    await fetch(`${BASE_URL}/${id}`, {
+      method: "DELETE"
+    });
+
+    fetchTodos(); // Refresh list
+  } catch (error) {
+    console.error("Failed to delete todo:", error);
+  }
+}
+
+// Event listeners
+addBtn.addEventListener("click", addTodo);
+
+// Load todos on page load
+fetchTodos();
