@@ -5,7 +5,9 @@ const ul = document.querySelector("#tasks");
 // Load all tasks from backend
 async function loadTasks() {
   ul.innerHTML = "";
-  const res = await fetch("http://localhost:5000/todos");
+  // const res = await fetch("http://localhost:5000/todos");
+  const res = await fetch("https://todo-app-backend-eqqj.onrender.com/todos");
+
   const todos = await res.json();
   todos.forEach(task => {
     const li = document.createElement("li");
