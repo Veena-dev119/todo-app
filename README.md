@@ -1,4 +1,4 @@
-# 🌟 My todo-app
+# 🌟 My To-Do List
 
 A simple full-stack Todo application built with HTML, CSS, JavaScript, Node.js, Express, and MongoDB.  
 Keep track of your tasks, add new ones, and delete completed tasks—all with a clean and user-friendly interface.
@@ -26,7 +26,9 @@ Tech Stack:
 - Frontend: HTML, CSS, JavaScript
 - Backend: Node.js, Express
 - Database: MongoDB
-- Deployment: Render (Backend)
+- Deployment:
+  - Frontend: GitHub Pages
+  - Backend: Render
 - Other: CORS, Body-parser, dotenv
 
 ---
@@ -91,6 +93,7 @@ Notes:
 
 - Make sure MongoDB is running and `.env` has the correct URI.
 - `node_modules` and `.env` are ignored in `.gitignore` for security and size reasons.
+- The frontend is deployed using GitHub Pages.
 - The backend API is deployed on Render and the frontend communicates with it using the live API URL.
 
 ---
