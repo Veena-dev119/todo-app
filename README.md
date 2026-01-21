@@ -26,6 +26,7 @@ Tech Stack:
 - Frontend: HTML, CSS, JavaScript
 - Backend: Node.js, Express
 - Database: MongoDB
+- Deployment: Render (Backend)
 - Other: CORS, Body-parser, dotenv
 
 ---
@@ -90,7 +91,7 @@ Notes:
 
 - Make sure MongoDB is running and `.env` has the correct URI.
 - `node_modules` and `.env` are ignored in `.gitignore` for security and size reasons.
-- The frontend connects to the backend using the `BACKEND_URL` variable in `script.js`.
+- The backend API is deployed on Render and the frontend communicates with it using the live API URL.
 
 ---
 
