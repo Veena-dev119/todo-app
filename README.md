@@ -1,4 +1,4 @@
-# 🌟 My To-Do List
+# 🌟 My todo-app
 
 A simple full-stack Todo application built with HTML, CSS, JavaScript, Node.js, Express, and MongoDB.  
 Keep track of your tasks, add new ones, and delete completed tasks—all with a clean and user-friendly interface.
