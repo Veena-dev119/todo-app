@@ -1,7 +1,13 @@
 # 🌟 My todo-app
 
-A simple full-stack Todo application built with HTML, CSS, JavaScript, Node.js, Express, and MongoDB. 
+A simple full-stack Todo application built with HTML, CSS, JavaScript, Node.js, Express, and MongoDB.  
 Keep track of your tasks, add new ones, and delete completed tasks—all with a clean and user-friendly interface.
+
+---
+
+Live Demo:
+
+https://veena-dev119.github.io/todo-app/
 
 ---
 
@@ -73,7 +79,7 @@ DELETE /todos/:id    - Delete a task (No body required)
 
 Usage:
 
-1. Open the frontend in your browser.
+1. Open the live demo link or frontend in your browser.
 2. Add a new task using the input field and "Add" button.
 3. Delete a task by clicking the red "Delete" button.
 4. All tasks are stored in MongoDB and persist between sessions.
@@ -89,5 +95,6 @@ Notes:
 ---
 
 Author:
+
 Veena  
 vpuppala18@gmail.com
